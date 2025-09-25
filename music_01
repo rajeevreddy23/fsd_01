@@ -1,0 +1,67 @@
+import React, { useState, useEffect } from 'react';
+
+function MusicApp() {
+  const [songs, setSongs] = useState([
+    { id: 1, title: 'Song 1', artist: 'Artist 1', src: 'song1.mp3' },
+    { id: 2, title: 'Song 2', artist: 'Artist 2', src: 'song2.mp3' },
+  ]);
+
+  const [currentSong, setCurrentSong] = useState(songs[0]);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    const audio = new Audio(currentSong.src);
+    if (isPlaying) {
+      audio.play();
+    } else {
+      audio.pause();
+    }
+  }, [isPlaying, currentSong]);
+
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleSongChange = (song) => {
+    setCurrentSong(song);
+    setIsPlaying(true);
+  };
+
+  return (
+    <div>
+      <h1>Music App</h1>
+      <SongList songs={songs} onSongChange={handleSongChange} />
+      <MusicPlayer
+        song={currentSong}
+        isPlaying={isPlaying}
+        onPlayPause={handlePlayPause}
+      />
+    </div>
+  );
+}
+
+function SongList({ songs, onSongChange }) {
+  return (
+    <ul>
+      {songs.map((song) => (
+        <li key={song.id} onClick={() => onSongChange(song)}>
+          {song.title} by {song.artist}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function MusicPlayer({ song, isPlaying, onPlayPause }) {
+  return (
+    <div>
+      <h2>{song.title}</h2>
+      <p>{song.artist}</p>
+      <button onClick={onPlayPause}>
+        {isPlaying ? 'Pause' : 'Play'}
+      </button>
+    </div>
+  );
+}
+
+export default MusicApp;
